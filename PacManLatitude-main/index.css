@@ -1,0 +1,51 @@
+body {
+    background-color: 		#555555;
+}
+
+#board
+{
+    display: flex;
+    flex-direction: row;
+    flex-wrap:wrap;
+    /* width: 500px; */
+    /* height: 500px; */
+    justify-content:flex-start;
+    /* visibility: hidden; */
+    background-color: #B22222
+}
+
+/* Use the . because square is a class */
+  .square {
+    height: 50px;
+    width: 50px;
+    box-sizing: border-box;
+    border: 1px solid black;
+    font-size: 3em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    }
+
+    #scoreboard{
+      color: white;
+      font-family: "Arial Black", Gadget, sans-serif;
+      font-size: medium;
+    }
+
+    #GameOverMessage{
+      color: white;
+      font-family: "Arial Black", Gadget, sans-serif;
+      font-size: large;
+    }
+
+    #ItemList{
+      color: white;
+      position: absolute;
+      left: 60%;
+      display: flexbox;
+      flex-direction: row;
+      align-items: center;
+      text-align:  center;
+
+    }
