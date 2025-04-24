@@ -39,7 +39,7 @@ const POISON_PERCENT = .4; // How ofen poison ghost drops poison
 const MaxItemIndex = 8;
 const ItemsGraphics = [
   'graphics/Medkit.png',//0
-  'graphics/blueGhost.jpg',
+  'graphics/GhostRepelent.png',
   'graphics/Respawn_Anchor.png',//2
   'graphics/Nuke.png',
   'graphics/Brain.png',
@@ -126,25 +126,25 @@ const FAIL = 0;
 const SUCCESS = 1;
 
 // graphics
-var PACMAN_CLASSIC_RIGHT = "<img src='graphics/Pacman icon right.jpg'>";
-var PACMAN_CLASSIC_LEFT = "<img src='graphics/Pacman icon left.jpg'>";
-var PACMAN_CLASSIC_UP = "<img src='graphics/Pacman icon up.jpg'>";
-var PACMAN_CLASSIC_DOWN = "<img src='graphics/Pacman icon down.jpg'>";
-var PACMAN_CLASSIC_RIGHT_PP = "<img src='graphics/Pacman icon right PP.jpg'>";
-var PACMAN_CLASSIC_LEFT_PP = "<img src='graphics/Pacman icon left PP.jpg'>";
-var PACMAN_CLASSIC_UP_PP = "<img src='graphics/Pacman icon up PP.jpg'>";
-var PACMAN_CLASSIC_DOWN_PP = "<img src='graphics/Pacman icon down PP.jpg'>";
+var PACMAN_CLASSIC_RIGHT = "<img src='graphics/Pacman icon right.png'>";
+var PACMAN_CLASSIC_LEFT = "<img src='graphics/Pacman icon left.png'>";
+var PACMAN_CLASSIC_UP = "<img src='graphics/Pacman icon up.png'>";
+var PACMAN_CLASSIC_DOWN = "<img src='graphics/Pacman icon down.png'>";
+var PACMAN_CLASSIC_RIGHT_PP = "<img src='graphics/Pacman icon right PP.png'>";
+var PACMAN_CLASSIC_LEFT_PP = "<img src='graphics/Pacman icon left PP.png'>";
+var PACMAN_CLASSIC_UP_PP = "<img src='graphics/Pacman icon up PP.png'>";
+var PACMAN_CLASSIC_DOWN_PP = "<img src='graphics/Pacman icon down PP.png'>";
 var ICON_WALL = "<img src='graphics/wallIcon.jpg'>";
-var ICON_PELLET = "<img src='graphics/PelletIcon.jpg'>";
-var ICON_BOMB = "<img src='graphics/BombIcon1.jpg'>";
-var ICON_GOOD_BOMB = "<img src='graphics/GoodBombIcon.jpg'>";
-var ICON_POWER_PELLET = "<img src='graphics/PowerPellet.jpg'>";
+var ICON_PELLET = "<img src='graphics/PelletIcon.png'>";
+var ICON_BOMB = "<img src='graphics/BombIcon1.png'>";
+var ICON_GOOD_BOMB = "<img src='graphics/GoodBombIcon.png'>";
+var ICON_POWER_PELLET = "<img src='graphics/PowerPellet.png'>";
 var ICON_TUNNEL = "<img src='graphics/tunnel.jpg'>";
-var ICON_POISON = "<img src='graphics/poison.jpg'>";
+var ICON_POISON = "<img src='graphics/poison.png'>";
 
-var ICON_GHOST = "<img src='graphics/blueGhost.jpg'>";
-var ICON_GHOST_RABID = "<img src='graphics/rabidGhost.jpg'>"
-var ICON_GHOST_POISON = "<img src='graphics/poisonGhost.jpg'>"
+var ICON_GHOST = "<img src='graphics/blueGhost.png'>";
+var ICON_GHOST_RABID = "<img src='graphics/rabidGhost.png'>"
+var ICON_GHOST_POISON = "<img src='graphics/poisonGhost.png'>"
 
 
 const GAME_MODE_POWER_OFF = 0;
@@ -188,31 +188,40 @@ var isOnItemLevel = false;
 document.onkeydown = checkKey;  // checkKey is function called when key pressed
 var pacmanIcon;   // stores which icon pacman should use based on direction
 
+var TimeLeft;
 // ----------------------------------------------------
 // -----   Start Main Driver section  -----------------
 // ----------------------------------------------------
 
+var timerThing = document.getElementById("Timer");
 // Begin "Driver" section - Initialize game components
-createBoard();
+function Start()
+{
 
-buildWallsAndPellets();
+  document.getElementById("Startbutton").remove();
 
-createItems();
+  resetBoard();
+  level--
+  updateScoreboard();
+  TimeLeft = 10*60;
+  setInterval(Timer,1000)
+  timerThing.innerHTML = "Time:" + TimeLeft;
 
-createTunnel();
+}
 
-drawInitialBoard();
 
-startGoodBombTimer();
 
-setTimeout( spawnAllGhosts, 2000);
+function Timer()
+{
+  let mins = Math.floor(TimeLeft/60)
+  let secs = Math.floor(TimeLeft%60)
+  timerThing.innerHTML = "Time:" + mins + ":"+ secs ;
+  TimeLeft--;
+  
+}
 
-updateScoreboard();
 
-respawnPacmanTimer();
-
-// End Driver section
-//
+// End Driver sectio
 // ----------------------------------------------------
 // -----   End Main Driver section  -----------------
 // ----------------------------------------------------
@@ -377,6 +386,42 @@ function createItems()
 }  // end function createItems
 
 // --------------------------------------------------
+var overlay;
+function overlayImage(imageSrc) {
+  overlay = document.createElement('div');
+  overlay.style.position = 'fixed';
+  overlay.style.top = '0';
+  overlay.style.left = '0';
+  overlay.style.width = '100%';
+  overlay.style.height = '100%';
+  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Optional: Add a semi-transparent background
+  overlay.style.zIndex = '9999'; // Ensure it's on top of everything
+  overlay.style.pointerEvents = 'none'; // Allow interaction with elements behind the overlay
+
+  const img = document.createElement('img');
+  img.src = imageSrc;
+  img.style.maxWidth = '100%';
+  img.style.maxHeight = '100%';
+  img.style.position = 'absolute';
+  img.style.top = '50%';
+  img.style.left = '50%';
+  img.style.transform = 'translate(-50%, -50%)';
+
+  overlay.appendChild(img);
+  document.body.appendChild(overlay);
+
+  
+}
+function removeOverlay() {
+  document.body.removeChild(overlay);
+  //print("fortnite")
+};
+
+// Example usage:
+
+// To remove the overlay later:
+// removeOverlay();
+
 
 function createTunnel()
 {
@@ -596,9 +641,6 @@ function spawnSpecialItems()
 
     SpawnPositions[pos] = null;
   }
-  
-
-  
     
   
 }
@@ -610,7 +652,11 @@ function PickupItem(type, pos)
     case 0:
     //MedKit
 
-    lives++;
+    lives+=1;
+    if(lives>3)
+    {
+      lives=3;
+    }
     updateScoreboard();
     break;
 
@@ -651,15 +697,17 @@ function PickupItem(type, pos)
       
     case 7:
       //Glasses
-      if(getRandomInt(0,100)>=50){
+      if(getRandomInt(0,100)>=50)
+      {
         GlassesChanges+=1;
-      }else{GlassesChanges-=1;}
+      }
+      else{GlassesChanges-=1;}
 
       break;
       
     case 8:
         //grenade
-        bombCount+=getRandomInt(1-7);
+        bombCount+=getRandomInt(1,7);
         updateScoreboard();
     break;
 
@@ -695,7 +743,6 @@ function getRandomInt(min, max) {
   // Generate a random number between min (inclusive) and max (inclusive)
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
 
 function resetBoard()
 {
@@ -916,6 +963,9 @@ function checkForPellets()
     {
       // console.log("Current before reset is " + current);
       drawItemBoard();
+      overlayImage('graphics/Happy Pacman.png');
+      setTimeout(removeOverlay, 350); // 2000 milliseconds = 2 seconds
+
     }
 } // end function checkForPellets
 
@@ -1002,6 +1052,9 @@ function resolvePacMan(direction)
   return FAIL;
 
 } // end function resolvePacMan
+
+
+
 
 function pacmanMovementChecks(PACMANICON,PACMANICONPP)
 {
