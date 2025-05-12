@@ -217,6 +217,10 @@ function Timer()
   let secs = Math.floor(TimeLeft%60)
   timerThing.innerHTML = "Time:" + mins + ":"+ secs ;
   TimeLeft--;
+  if(mins+secs<=0)
+  {
+    drawEmptyBoard();
+  }
   
 }
 
@@ -918,6 +922,9 @@ function redrawBoardPacman(oldSquare, newSquare)
     // deal with new square
     if ((current != OFF_THE_BOARD) && (gameMode != GAME_MODE_OVER))
       squares[newSquare].innerHTML = pacmanIcon; // set pac man on new current
+
+    var audio = new Audio("sounds/Owa.mp3");
+
 
 }   // end function redrawBoardPacman
 
@@ -1679,22 +1686,31 @@ function reSpawnGhost(squareNum, ghostType)
 
   // Handle poison ghost respawn
 
+
   if (ghostType == GHOST_TYPE_POISON)
   {
     poisonGhostCount++;
     var poisonTimerIds = new Array;
     ghosts.push({squareNum:squareNum, ghost_type: ghostType, timerID: tempTimerId, respawnId: -1, poisonTimers: poisonTimerIds});
+    squares[squareNum].innerHTML = ICON_GHOST_POISON;
   }
   else
   {
     if (ghostType == GHOST_TYPE_RABID)
+    {
       rabidGhostCount++;
-    else
+      squares[squareNum].innerHTML = ICON_GHOST_RABID;
+    }else{
       regGhostCount++;
+      squares[squareNum].innerHTML = ICON_GHOST;
+    }
+  
+  }
+      
 
     // push ghost onto array with it's timer id and location
     ghosts.push({squareNum:squareNum, ghost_type: ghostType, timerID: tempTimerId, respawnId: -1});
-  }
+    
 
   updateScoreboard();
 
